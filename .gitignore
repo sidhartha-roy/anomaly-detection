@@ -3,3 +3,4 @@ datasets
 frames
 videos
 pretrained
+*.pt
