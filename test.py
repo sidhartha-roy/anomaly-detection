@@ -43,6 +43,9 @@ def evaluate(net, dataset, criterion=cfg.MODEL.CRITERION):
             # Multiply average accuracy times the number of examples
             test_acc += accuracy.item() * data.size(0)
 
+            del data, target, output, pred, _, correct_tensor
+            torch.cuda.empty_cache()
+
         # Calculate average losses
         test_loss = test_loss / len(dataloaders[cfg.CONST.TEST].dataset)
 

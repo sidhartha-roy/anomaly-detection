@@ -4,3 +4,4 @@ frames
 videos
 pretrained
 *.pt
+__*

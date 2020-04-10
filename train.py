@@ -79,6 +79,9 @@ def train(net, dataset):
                 f'Epoch: {epoch}\t{100 * (ii + 1) / len(dataset.dataloaders[dataset.TRAIN]):.2f}% complete. {time.time() - start:.2f} seconds elapsed in epoch.',
                 end='\r')
 
+            del data, target, output, pred, _, correct_tensor
+            torch.cuda.empty_cache()
+
         # After training loops ends, start validation
         else:
             net.model.epochs += 1
@@ -109,6 +112,9 @@ def train(net, dataset):
                         correct_tensor.type(torch.FloatTensor))
                     # Multiply average accuracy times the number of examples
                     valid_acc += accuracy.item() * data.size(0)
+
+                    del data, target, output, pred, _, correct_tensor
+                    torch.cuda.empty_cache()
 
                 # Calculate average losses
                 train_loss = train_loss / len(dataset.dataloaders[dataset.TRAIN].dataset)
@@ -143,7 +149,7 @@ def train(net, dataset):
                 else:
                     epochs_no_improve += 1
                     # Trigger early stopping
-                    if epochs_no_improve >= cfg.MAX_EPOCHS_STOP:
+                    if epochs_no_improve >= cfg.MODEL.MAX_EPOCHS_STOP:
                         print(
                             f'\nEarly Stopping! Total epochs: {epoch}. Best epoch: {best_epoch} with loss: {valid_loss_min:.2f} and acc: {100 * valid_acc:.2f}%'
                         )
@@ -180,4 +186,6 @@ def train(net, dataset):
     history = pd.DataFrame(
         history,
         columns=['train_loss', 'valid_loss', 'train_acc', 'valid_acc'])
+
+    history.to_pickle(cfg.MODEL.HISTORY_PATH)
     return net, history

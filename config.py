@@ -14,7 +14,7 @@ __C.DATASETS.RAW_PATH                      = './data/'
 __C.DATASETS.TRAIN_RATIO                   = 0.8
 __C.DATASETS.VAL_RATIO                     = 0.1
 __C.DATASETS.TEST_RATIO                    = 0.1
-__C.DATASETS.BATCH_SIZE                    = 200
+__C.DATASETS.BATCH_SIZE                    = 10
 
 # constants
 __C.CONST                                  = edict()
@@ -44,6 +44,7 @@ __C.MODEL.FILENAME                         = './pretrained/anomaly.pt'
 __C.MODEL.CRITERION                        = nn.NLLLoss()
 __C.MODEL.OPTIMIZER                        = 'ADAM'  # 'ADAM' or 'SGD'
 __C.MODEL.LR                               = 0.001
-__C.MODEL.MAX_EPOCHS_STOP                  = 50
-__C.MODEL.N_EPOCHS                         = 100
+__C.MODEL.MAX_EPOCHS_STOP                  = 10
+__C.MODEL.N_EPOCHS                         = 10
 __C.MODEL.TRAIN_PRINT_EVERY                = 2
+__C.MODEL.HISTORY_PATH                     = '.pretrained/history.pkl'
