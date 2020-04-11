@@ -1,5 +1,7 @@
 # Anomaly Detection Using Transfer Learning
 
+Clone Code: `git clone https://github.com/sidhartha-roy/anomaly-detection.git`
+
 ### Model: 
 Pre-trained VGG16 convolution layers + new classification layers added.
 Portion of the convolution layers are frozen.
