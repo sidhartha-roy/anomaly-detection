@@ -1,9 +1,12 @@
 import os
+import numpy as np
 from config import cfg
 from utils import plot_images
 import split_folders
 import torch
 from torchvision import datasets, transforms
+from torch.utils.data import WeightedRandomSampler
+from torch.utils.data import DataLoader
 
 
 class DatasetLoader:
@@ -16,11 +19,14 @@ class DatasetLoader:
         self.TRAIN = cfg.CONST.TRAIN
         self.VAL = cfg.CONST.VAL
         self.TEST = cfg.CONST.TEST
+        self.weighted_sampler = None
 
     def transform_load(self):
         self.transform()
         self.build_image_datasets()
         self.build_dataloaders()
+        if cfg.DATASETS.WEIGHTED_SAMPLER:
+            self.weighted_loader()
 
     def transform(self):
         self.data_transforms = {
@@ -78,6 +84,25 @@ class DatasetLoader:
         print("Classes: ")
         self.label_names = self.image_datasets[self.TRAIN].classes
         print(self.image_datasets[self.TRAIN].classes)
+
+    def weighted_loader(self):
+        targets = np.array(self.dataloaders[self.TRAIN].dataset.targets)
+        classes, class_counts = np.unique(targets, return_counts=True)
+        for i in range(len(classes)):
+            print("Classes = {}, counts {}".format(classes[i], class_counts[i]))
+        num_classes = len(classes)
+
+        class_weights = 1. / class_counts
+        samples_weight = np.array([class_weights[t] for t in targets])
+
+        samples_weight = torch.from_numpy(samples_weight)
+        samples_weight = samples_weight.double()
+        self.weighted_sampler = WeightedRandomSampler(samples_weight, len(samples_weight))
+
+        self.dataloaders[self.TRAIN] = DataLoader(self.image_datasets[self.TRAIN],
+                                                  batch_size=cfg.DATASETS.BATCH_SIZE,
+                                                  num_workers=cfg.CONST.NUM_WORKERS,
+                                                  sampler=self.weighted_sampler)
 
     def split_folder(self):
         """

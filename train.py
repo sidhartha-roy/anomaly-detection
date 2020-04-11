@@ -138,7 +138,7 @@ def train(net, dataset):
                     # Save the model if validation loss decreases
                 if valid_loss < valid_loss_min:
                     # Save model
-                    torch.save(net.model.state_dict(), cfg.MODEL.FILENAME)
+                    torch.save(net.model.state_dict(), cfg.MODEL.STATE_DICT_FILE)
                     # Track improvement
                     epochs_no_improve = 0
                     valid_loss_min = valid_loss
@@ -159,7 +159,7 @@ def train(net, dataset):
                         )
 
                         # Load the best state dict
-                        net.model.load_state_dict(torch.load(cfg.MAX_EPOCHS_STOP))
+                        net.model.load_state_dict(torch.load(cfg.MODEL.STATE_DICT_FILE))
                         # Attach the optimizer
                         net.model.optimizer = net.optimizer
 
@@ -180,12 +180,11 @@ def train(net, dataset):
         f'\nBest epoch: {best_epoch} with loss: {valid_loss_min:.2f} and acc: {100 * valid_acc:.2f}%'
     )
     print(
-        f'{total_time:.2f} total seconds elapsed. {total_time / (epoch):.2f} seconds per epoch.'
+        f'{total_time:.2f} total seconds elapsed. {total_time / (epoch+1):.2f} seconds per epoch.'
     )
     # Format history
     history = pd.DataFrame(
         history,
         columns=['train_loss', 'valid_loss', 'train_acc', 'valid_acc'])
 
-    history.to_pickle(cfg.MODEL.HISTORY_PATH)
     return net, history

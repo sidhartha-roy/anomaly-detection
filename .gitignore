@@ -2,6 +2,6 @@ data
 datasets
 frames
 videos
-pretrained
+./pretrained/*
 *.pt
 __*

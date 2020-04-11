@@ -1,6 +1,9 @@
 import time
+import os
 from config import cfg
 import torch
+from network import Net
+from dataloader import DatasetLoader
 
 
 def evaluate(net, dataset, criterion=cfg.MODEL.CRITERION):
@@ -55,6 +58,24 @@ def evaluate(net, dataset, criterion=cfg.MODEL.CRITERION):
     elapsed_time = time.time() - since
     print()
     print("Evaluation completed in {:.0f}m {:.0f}s".format(elapsed_time // 60, elapsed_time % 60))
-    print("Avg loss (test): {:.4f}".format(test_loss))
-    print("Avg acc (test): {:.4f}".format(test_acc))
+    print("Avg loss (test): {:.4f}".format(100*test_loss))
+    print("Avg acc (test): {:.4f}".format(100*test_acc))
     print('-' * 10)
+
+
+def main():
+    dataset = DatasetLoader()
+    dataset.transform_load()
+
+    # create network, modify, and set parameters
+    net = Net(dataset)
+    net.build()
+    net.set_params()
+
+    if os.path.exists(cfg.MODEL.FILENAME):
+        net.model = torch.load(cfg.MODEL.FILENAME)
+
+    evaluate(net, dataset)
+
+if __name__ == "__main__":
+    main()
