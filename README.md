@@ -24,7 +24,10 @@ For data preprocessing please follow instructions in the preprocessing folder.
 8. Train the model: `python3 run_training.py`
 This command downloads vgg16 model, modifies it, creates the dataloader, trains the model, and stores the trained model and history of training in folder `/pretrained`.
 Loss history curve is displayed (remember to close window to continue).
-9. Test the model by running `python3 test.py`..
+9. Test the accuracy of the model: `python3 test.py`
+
+More model performance features such as ROC and AUC curves can be plotted easily.
+To play with the code please use the notebook `Anomaly_Detection.ipynb`
 
 
  
