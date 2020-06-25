@@ -1,5 +1,3 @@
-# Overview interview question
-
 ## Instructions
 
 Download the videos by following the instructions below. 
